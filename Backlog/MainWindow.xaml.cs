@@ -42,16 +42,23 @@ namespace Backlog
 
         public void writeSettings()
         {
-            System.IO.File.WriteAllText(settingsFile, taskFile);
+            System.IO.File.WriteAllText(settingsFile, taskFile + System.Environment.NewLine + actual + System.Environment.NewLine + estimated);
         }
 
         public void readSettings()
         {
             if (!System.IO.File.Exists(settingsFile))
             {
-                System.IO.File.WriteAllText(settingsFile,taskFile);
+                System.IO.File.WriteAllText(settingsFile, taskFile + System.Environment.NewLine + actual + System.Environment.NewLine + estimated);
             }
-            taskFile = System.IO.File.ReadAllText(settingsFile);
+            string s = System.IO.File.ReadAllText(settingsFile);
+            string[] spl = { System.Environment.NewLine };
+            string[] ss = s.Split(spl, StringSplitOptions.RemoveEmptyEntries);
+            taskFile = ss[0];
+            actual = int.Parse(ss[1]);
+            estimated = int.Parse(ss[2]);
+
+            updateVelocity();
         }
 
         public void writeTaskFile(List<BacklogItem> items)
@@ -88,6 +95,9 @@ namespace Backlog
         static String settingsFile = folder + @"\settings.txt";
         static String taskFile = folder + @"\taskfile.txt";
 
+        static int actual=0;
+        static int estimated=0;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -119,8 +129,6 @@ namespace Backlog
                 BacklogList.ItemsSource = list;
 
             };
-
-          
         }
 
         //add item to list
@@ -170,15 +178,22 @@ namespace Backlog
             BacklogList.Items.Refresh();
         }
 
+        private void updateVelocity()
+        {
+            VelocityTextBlock.Text = actual + " : " + estimated;
+            writeSettings();
+        }
+
         private void Quit_Click(object sender, EventArgs e)
         {
             quit = true;
             icon.Visible = false;
             writeTaskFile(list);
+            writeSettings();
             this.Close();
         }
 
-
+        //called when a task is edited
         public void OnCompleted()
         {
             //called after edit
@@ -193,8 +208,27 @@ namespace Backlog
         {
         }
 
+        //called when a task is completed
         public void OnNext(BacklogItem value)
         {
+            try
+            {
+                estimated += int.Parse(value.TimeEstimateBlock.Text);
+                actual += value.ActualTime;
+
+                //update the velocity
+                updateVelocity();
+            }
+            catch (Exception)
+            {
+                //do nothing because no estimate was given
+                //dont want to include actual either because
+                //it would skew velocity
+            }
+
+            list.Sort();
+            BacklogList.Items.Refresh();
+            writeTaskFile(list);
         }
 
         private void BacklogList_SelectionChanged(object sender, SelectionChangedEventArgs e)

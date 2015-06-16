@@ -34,6 +34,7 @@ namespace Backlog
             FileNameTextBlock.Text = ss[2];
             DateTextBlock.Text = ss[3];
             Completed = Boolean.Parse(ss[4]);
+            TimeEstimateBlock.Text = ss[5];
 
             CheckPastDue();
         }
@@ -44,12 +45,22 @@ namespace Backlog
                                   NotesTextBlock.Text,
                                   FileNameTextBlock.Text,
                                   DateTextBlock.Text,
-                                  Completed.ToString()};
+                                  Completed.ToString(),
+                                  TimeEstimateBlock.Text};
             
             return String.Join("\u0001",output).Replace("\n","\u0002").Replace("\r","");
         }
 
         private Boolean completed=false;
+        private int actualTime=0;
+
+        public int ActualTime
+        {
+            get
+            {
+                return actualTime;
+            }
+        }
 
         public Boolean Completed
         {
@@ -102,12 +113,23 @@ namespace Backlog
 
         private void CompleteButton_Click(object sender, RoutedEventArgs e)
         {
-            Completed = true;
+            //get time estimate
+            CompletionDialog cd = new CompletionDialog();
+            cd.ShowDialog();
+            try
+            {
+                actualTime = int.Parse(cd.TimeSpentTextBox.Text);
+            }
+            catch (Exception)
+            {
+                actualTime = 0;
+            }
 
             foreach (IObserver<BacklogItem> ob in watchers)
             {
-                ob.OnCompleted();
+                ob.OnNext(this);
             }
+            Completed = true;
         }
 
         private void UserControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -127,7 +149,6 @@ namespace Backlog
             CheckPastDue();
             foreach (IObserver<BacklogItem> ob in watchers)
             {
-                Console.WriteLine("notifying...");
                 ob.OnCompleted();
             }
         }
@@ -136,7 +157,6 @@ namespace Backlog
 
         public IDisposable Subscribe(IObserver<BacklogItem> observer)
         {
-            Console.WriteLine("subscribing...");
             if (watchers.Contains(observer))
             {
                 watchers.Remove(observer);

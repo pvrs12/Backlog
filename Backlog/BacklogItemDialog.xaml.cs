@@ -29,6 +29,7 @@ namespace Backlog
             bid.TitleTextBox.Text = bi.TitleTextBlock.Text;
             bid.NotesTextBox.Text = bi.NotesTextBlock.Text;
             bid.FileLocationTextBox.Text = bi.FileNameTextBlock.Text;
+            bid.EstimateTextBox.Text = bi.TimeEstimateBlock.Text;
 
             bid.ShowDialog();
             if (bid.canceled)
@@ -58,6 +59,7 @@ namespace Backlog
             }
             bi.FileNameTextBlock.Text = bid.FileLocationTextBox.Text;
             bi.NotesTextBlock.Text = bid.NotesTextBox.Text;
+            bi.TimeEstimateBlock.Text = bid.EstimateTextBox.Text;
         }
 
         public static BacklogItem CreateNewBacklogItem()
@@ -90,6 +92,7 @@ namespace Backlog
             }
             bi.FileNameTextBlock.Text = bid.FileLocationTextBox.Text;
             bi.NotesTextBlock.Text = bid.NotesTextBox.Text;
+            bi.TimeEstimateBlock.Text = bid.EstimateTextBox.Text;
             return bi;
         }
 
@@ -120,6 +123,21 @@ namespace Backlog
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.ShowDialog();
             FileLocationTextBox.Text = ofd.FileName;
+        }
+
+        private void EstimateTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            int a;
+            try
+            {
+                a = int.Parse(e.Text);
+            }
+            catch (Exception)
+            {
+                e.Handled = true;
+                return;
+            }
+            e.Handled = false;
         }
     }
 }

@@ -13,6 +13,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TextBlock Text="Title" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Margin="5"/>
         <TextBox Name="TitleTextBox" Grid.Row="0" Grid.Column="1" Margin="5"/>
@@ -20,8 +21,10 @@
         <TextBox Name="NotesTextBox" Grid.Row="1" Grid.Column="1" Margin="5" AcceptsReturn="True" TextWrapping="Wrap"/>
         <TextBlock Text="Due Date" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" Margin="5"/>
         <DatePicker Name="DateTextBox" Grid.Row="2" Grid.Column="1" Margin="5"/>
-        <TextBlock Text="File Location" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Right" Margin="5"/>
-        <Grid Grid.Row="3" Grid.Column="1" Margin="5">
+        <TextBlock Text="Time Estimate" Grid.Row="3" Grid.Column="0" Margin="5"/>
+        <TextBox Name="EstimateTextBox" Grid.Row="3" Grid.Column="1" Margin="5" PreviewTextInput="EstimateTextBox_PreviewTextInput"/>
+        <TextBlock Text="File Location" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Right" Margin="5"/>
+        <Grid Grid.Row="4" Grid.Column="1" Margin="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -29,7 +32,7 @@
             <TextBox Grid.Row="0" Name="FileLocationTextBox" Grid.Column="0"/>
             <Button Content="Browse..." Grid.Row="0" Grid.Column="1" Click="Button_Click_2"/>
         </Grid>
-        <Grid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2">
+        <Grid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
