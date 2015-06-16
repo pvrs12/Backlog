@@ -17,7 +17,7 @@
         <TextBlock Text="Title" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Margin="5"/>
         <TextBox Name="TitleTextBox" Grid.Row="0" Grid.Column="1" Margin="5"/>
         <TextBlock Text="Notes" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Margin="5"/>
-        <TextBox Name="NotesTextBox" Grid.Row="1" Grid.Column="1" Margin="5"/>
+        <TextBox Name="NotesTextBox" Grid.Row="1" Grid.Column="1" Margin="5" AcceptsReturn="True" TextWrapping="Wrap"/>
         <TextBlock Text="Due Date" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" Margin="5"/>
         <DatePicker Name="DateTextBox" Grid.Row="2" Grid.Column="1" Margin="5"/>
         <TextBlock Text="File Location" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Right" Margin="5"/>

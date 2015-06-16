@@ -28,14 +28,9 @@ namespace Backlog
         static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X,
            int Y, int cx, int cy, uint uFlags);
 
-        [DllImport("user32.dll")]
-        static extern bool SetWindowPlacement(IntPtr hWnd, uint wp);
-
         const UInt32 SWP_NOSIZE = 0x0001;
         const UInt32 SWP_NOMOVE = 0x0002;
         const UInt32 SWP_NOACTIVATE = 0x0010;
-
-        const UInt32 SW_SHOWNORMAL = 0x0001;
 
         static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
 
@@ -43,12 +38,6 @@ namespace Backlog
         {
             IntPtr hWnd = new WindowInteropHelper(window).Handle;
             SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE);
-        }
-
-        public static void Restore(Window window)
-        {
-            IntPtr hWnd = new WindowInteropHelper(window).Handle;
-            SetWindowPlacement(hWnd, SW_SHOWNORMAL);
         }
 
         public static void writeSettings()
@@ -98,20 +87,35 @@ namespace Backlog
         {
             InitializeComponent();
 
-            this.ShowInTaskbar = false;
+            Loaded += (o, e) =>
+            {
+                var workingArea = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
+                var transform = PresentationSource.FromVisual(this).CompositionTarget.TransformFromDevice;
+                var corner = transform.Transform(new Point(workingArea.Right, workingArea.Bottom));
 
-            iconCM.MenuItems.Add("Choose Task File");
-            iconCM.MenuItems.Add("Quit");
-            iconCM.MenuItems[0].Click += TaskFile_Click;
-            iconCM.MenuItems[1].Click += Quit_Click;
+                this.Left = corner.X - this.ActualWidth;
+                this.Top = workingArea.Top;
 
-            icon.Visible = true;
-            icon.ContextMenu = iconCM;
-            icon.Icon = new System.Drawing.Icon(@"C:\Windows\System32\PerfCenterCpl.ico");
+                this.Height = workingArea.Height;
 
-            readSettings();
-            readTaskFile(list);
-            BacklogList.ItemsSource = list;
+                this.ShowInTaskbar = false;
+
+                iconCM.MenuItems.Add("Choose Task File");
+                iconCM.MenuItems.Add("Quit");
+                iconCM.MenuItems[0].Click += TaskFile_Click;
+                iconCM.MenuItems[1].Click += Quit_Click;
+
+                icon.Visible = true;
+                icon.ContextMenu = iconCM;
+                icon.Icon = new System.Drawing.Icon(@"C:\Windows\System32\PerfCenterCpl.ico");
+
+                readSettings();
+                readTaskFile(list);
+                BacklogList.ItemsSource = list;
+
+            };
+
+          
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -121,11 +125,7 @@ namespace Backlog
             {
                 return;
             }
-            if (bi.Date.ToUniversalTime() < DateTime.UtcNow)
-            {
-                //color red
-                bi.PastDue = true;
-            }
+            bi.CheckPastDue();
             list.Add(bi);
             list.Sort();
             writeTaskFile(list);
@@ -138,11 +138,7 @@ namespace Backlog
             SetBottom(this);
             foreach (BacklogItem bi in list)
             {
-                if (bi.Date.ToUniversalTime() < DateTime.UtcNow)
-                {
-                    //color red
-                    bi.PastDue = true;
-                }
+                bi.CheckPastDue();
             }
         }
 

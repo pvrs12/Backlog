@@ -27,13 +27,15 @@ namespace Backlog
 
         public BacklogItem(String s):this()
         {
-            String[] ss = s.Split('\u0001');
+            String[] ss = s.Replace("\u0002",System.Environment.NewLine).Split('\u0001');
 
             TitleTextBlock.Text = ss[0];
             NotesTextBlock.Text = ss[1];
             FileNameTextBlock.Text = ss[2];
             DateTextBlock.Text = ss[3];
             Completed = Boolean.Parse(ss[4]);
+
+            CheckPastDue();
         }
 
         public override String ToString()
@@ -44,10 +46,9 @@ namespace Backlog
                                   DateTextBlock.Text,
                                   Completed.ToString()};
             
-            return String.Join("\u0001",output);
+            return String.Join("\u0001",output).Replace("\n","\u0002").Replace("\r","");
         }
 
-        private Boolean pastDue;
         private Boolean completed=false;
 
         public Boolean Completed
@@ -66,19 +67,14 @@ namespace Backlog
             }
         }
 
-        public Boolean PastDue
+        public void CheckPastDue()
         {
-            set
+            bool bo = Date.ToUniversalTime().AddDays(1) < DateTime.UtcNow;
+            if (bo)
             {
                 //update color
-                Brush b = new SolidColorBrush(Color.FromRgb(200,0,0));
+                Brush b = new SolidColorBrush(Color.FromRgb(200, 0, 0));
                 this.Background = b;
-
-                pastDue = value;
-            }
-            get
-            {
-                return pastDue;
             }
         }
 
@@ -111,7 +107,6 @@ namespace Backlog
             }
             catch (Exception)
             {
-                //couldn't run. dont do anythign (probably no real file associated)
             }
         }
     }
