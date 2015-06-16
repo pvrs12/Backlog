@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -47,6 +48,11 @@ namespace Backlog
 
         public void readSettings()
         {
+            if (!System.IO.Directory.Exists(folder))
+            {
+                //if no folder, make it
+                System.IO.Directory.CreateDirectory(folder);
+            }
             if (!System.IO.File.Exists(settingsFile))
             {
                 System.IO.File.WriteAllText(settingsFile, taskFile + System.Environment.NewLine + actual + System.Environment.NewLine + estimated);
@@ -74,6 +80,11 @@ namespace Backlog
         public void readTaskFile(List<BacklogItem> list)
         {
             list.Clear();
+            //no file, make it
+            if (!System.IO.File.Exists(taskFile))
+            {
+                writeTaskFile(list);
+            }
             foreach (String line in System.IO.File.ReadLines(taskFile))
             {
                 BacklogItem bi = new BacklogItem(line);
@@ -91,12 +102,12 @@ namespace Backlog
         NotifyIcon icon = new NotifyIcon();
         System.Windows.Forms.ContextMenu iconCM = new System.Windows.Forms.ContextMenu();
 
-        static String folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)+@"\Backlog";
-        static String settingsFile = folder + @"\settings.txt";
-        static String taskFile = folder + @"\taskfile.txt";
+        static String folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + System.IO.Path.DirectorySeparatorChar + @"Backlog";
+        static String settingsFile = folder + System.IO.Path.DirectorySeparatorChar + @"settings.txt";
+        static String taskFile = folder + System.IO.Path.DirectorySeparatorChar + @"taskfile.txt";
 
-        static int actual=0;
-        static int estimated=0;
+        static int actual = 0;
+        static int estimated = 0;
 
         public MainWindow()
         {
@@ -122,7 +133,8 @@ namespace Backlog
 
                 icon.Visible = true;
                 icon.ContextMenu = iconCM;
-                icon.Icon = new System.Drawing.Icon(@"C:\Windows\System32\PerfCenterCpl.ico");
+                Stream iconStream = System.Windows.Application.GetResourceStream(new Uri("pack://application:,,,/Icon1.ico")).Stream;
+                icon.Icon = new System.Drawing.Icon(iconStream);
 
                 readSettings();
                 readTaskFile(list);
