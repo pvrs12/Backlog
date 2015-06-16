@@ -1,0 +1,15 @@
+﻿<Window x:Class="Backlog.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Work Backlog" Height="350" Width="305" 
+        Activated="Window_SetBottom" GotFocus="Window_SetBottom" MouseDown="Window_SetBottom" SizeChanged="Window_SetBottom" StateChanged="Window_SetBottom" 
+        Closing="Window_Closing" WindowStyle="None">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <ListBox Name="BacklogList" HorizontalContentAlignment="Stretch"/>
+        <Button Grid.Row="1" Content="+ Add new Backlog item" FontWeight="Bold" Margin="5" Click="Button_Click"/>
+    </Grid>
+</Window>

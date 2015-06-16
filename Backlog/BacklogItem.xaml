@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="Backlog.BacklogItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="75" d:DesignWidth="300" MouseDoubleClick="UserControl_MouseDoubleClick">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Name="TitleTextBlock" Margin="0,0,10,0" FontWeight="Bold"/>
+        <TextBlock TextWrapping="Wrap" Grid.Row="1" Name="NotesTextBlock" Margin="0,0,10,0"/>
+        <TextBlock HorizontalAlignment="Right" Grid.RowSpan="2" Grid.Column="1" VerticalAlignment="Center" Name="DateTextBlock"/>
+        <Button HorizontalAlignment="Right" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="CompleteButton" Content="Complete" Click="CompleteButton_Click"/>
+        <TextBlock Grid.Row="2" Name="FileNameTextBlock" Margin="0,0,10,0"/>
+    </Grid>
+</UserControl>
