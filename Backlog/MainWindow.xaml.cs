@@ -73,8 +73,8 @@ namespace Backlog
                 if (!bi.Completed)
                 {
                     bi.Subscribe(this);
+                    list.Add(bi);
                 }
-                list.Add(bi);
             }
             list.Sort();
         }
