@@ -96,6 +96,8 @@ namespace Backlog
         public BacklogItemDialog()
         {
             InitializeComponent();
+
+            TitleTextBox.Focus();
         }
 
         //okay

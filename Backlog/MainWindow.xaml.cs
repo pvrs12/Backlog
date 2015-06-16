@@ -70,7 +70,10 @@ namespace Backlog
             foreach (String line in System.IO.File.ReadLines(taskFile))
             {
                 BacklogItem bi = new BacklogItem(line);
-                bi.Subscribe(this);
+                if (!bi.Completed)
+                {
+                    bi.Subscribe(this);
+                }
                 list.Add(bi);
             }
             list.Sort();
@@ -192,6 +195,12 @@ namespace Backlog
 
         public void OnNext(BacklogItem value)
         {
+        }
+
+        private void BacklogList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            BacklogList.SelectedIndex = -1;
+            e.Handled = true;
         }
     }
 }
