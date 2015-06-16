@@ -18,7 +18,7 @@ namespace Backlog
     /// <summary>
     /// Interaction logic for BacklogItem.xaml
     /// </summary>
-    public partial class BacklogItem : UserControl, IComparable<BacklogItem>
+    public partial class BacklogItem : UserControl, IComparable<BacklogItem>, IObservable<BacklogItem>
     {
         public BacklogItem()
         {
@@ -76,6 +76,12 @@ namespace Backlog
                 Brush b = new SolidColorBrush(Color.FromRgb(200, 0, 0));
                 this.Background = b;
             }
+            else
+            {
+                //update color
+                Brush b = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+                this.Background = b;
+            }
         }
 
         public DateTime Date
@@ -97,6 +103,11 @@ namespace Backlog
         private void CompleteButton_Click(object sender, RoutedEventArgs e)
         {
             Completed = true;
+
+            foreach (IObserver<BacklogItem> ob in watchers)
+            {
+                ob.OnCompleted();
+            }
         }
 
         private void UserControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -108,6 +119,34 @@ namespace Backlog
             catch (Exception)
             {
             }
+        }
+
+        private void EditButton_Click(object sender, RoutedEventArgs e)
+        {
+            BacklogItemDialog.EditBacklogItem(this);
+            CheckPastDue();
+            foreach (IObserver<BacklogItem> ob in watchers)
+            {
+                Console.WriteLine("notifying...");
+                ob.OnCompleted();
+            }
+        }
+
+        List<IObserver<BacklogItem>> watchers = new List<IObserver<BacklogItem>>();
+
+        public IDisposable Subscribe(IObserver<BacklogItem> observer)
+        {
+            Console.WriteLine("subscribing...");
+            if (watchers.Contains(observer))
+            {
+                watchers.Remove(observer);
+            }
+            else
+            {
+                watchers.Add(observer);
+            }
+
+            return null;
         }
     }
 }

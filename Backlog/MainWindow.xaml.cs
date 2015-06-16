@@ -22,7 +22,7 @@ namespace Backlog
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IObserver<BacklogItem>
     {
         [DllImport("user32.dll")]
         static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X,
@@ -40,12 +40,12 @@ namespace Backlog
             SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE);
         }
 
-        public static void writeSettings()
+        public void writeSettings()
         {
             System.IO.File.WriteAllText(settingsFile, taskFile);
         }
 
-        public static void readSettings()
+        public void readSettings()
         {
             if (!System.IO.File.Exists(settingsFile))
             {
@@ -54,7 +54,7 @@ namespace Backlog
             taskFile = System.IO.File.ReadAllText(settingsFile);
         }
 
-        public static void writeTaskFile(List<BacklogItem> items)
+        public void writeTaskFile(List<BacklogItem> items)
         {
             StringBuilder sb = new StringBuilder();
             foreach (BacklogItem bi in items)
@@ -64,12 +64,14 @@ namespace Backlog
             System.IO.File.WriteAllText(taskFile, sb.ToString());
         }
 
-        public static void readTaskFile(List<BacklogItem> list)
+        public void readTaskFile(List<BacklogItem> list)
         {
             list.Clear();
             foreach (String line in System.IO.File.ReadLines(taskFile))
             {
-                list.Add(new BacklogItem(line));
+                BacklogItem bi = new BacklogItem(line);
+                bi.Subscribe(this);
+                list.Add(bi);
             }
             list.Sort();
         }
@@ -118,6 +120,7 @@ namespace Backlog
           
         }
 
+        //add item to list
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             BacklogItem bi = BacklogItemDialog.CreateNewBacklogItem();
@@ -127,6 +130,7 @@ namespace Backlog
             }
             bi.CheckPastDue();
             list.Add(bi);
+            bi.Subscribe(this);
             list.Sort();
             writeTaskFile(list);
 
@@ -170,6 +174,24 @@ namespace Backlog
             writeTaskFile(list);
             this.Close();
         }
-        
+
+
+        public void OnCompleted()
+        {
+            //called after edit
+            //forces refresh
+            list.Sort();
+            BacklogList.Items.Refresh();
+
+            writeTaskFile(list);
+        }
+
+        public void OnError(Exception error)
+        {
+        }
+
+        public void OnNext(BacklogItem value)
+        {
+        }
     }
 }

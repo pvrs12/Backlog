@@ -22,6 +22,44 @@ namespace Backlog
     {
         bool canceled = false;
 
+        public static void EditBacklogItem(BacklogItem bi)
+        {
+            BacklogItemDialog bid = new BacklogItemDialog();
+            bid.DateTextBox.Text = bi.Date.ToShortDateString();
+            bid.TitleTextBox.Text = bi.TitleTextBlock.Text;
+            bid.NotesTextBox.Text = bi.NotesTextBlock.Text;
+            bid.FileLocationTextBox.Text = bi.FileNameTextBlock.Text;
+
+            bid.ShowDialog();
+            if (bid.canceled)
+            {
+                return;
+            }
+
+            if (bid.DateTextBox.SelectedDate.HasValue)
+            {
+                bi.DateTextBlock.Text = bid.DateTextBox.SelectedDate.Value.ToShortDateString();
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("You must input a due date!", "Date Missing");
+                EditBacklogItem(bi);
+                return;
+            }
+            if (!bid.TitleTextBox.Text.Equals(""))
+            {
+                bi.TitleTextBlock.Text = bid.TitleTextBox.Text;
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("You must input a title!", "Title Missing");
+                EditBacklogItem(bi);
+                return;
+            }
+            bi.FileNameTextBlock.Text = bid.FileLocationTextBox.Text;
+            bi.NotesTextBlock.Text = bid.NotesTextBox.Text;
+        }
+
         public static BacklogItem CreateNewBacklogItem()
         {
             BacklogItemDialog bid = new BacklogItemDialog();

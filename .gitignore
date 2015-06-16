@@ -1,0 +1,5 @@
+#gitignore
+Visual Studio*
+Backlog/obj/*
+Backlog/bin/*
+
