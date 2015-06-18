@@ -52,9 +52,9 @@ namespace Backlog
         }
 
         private Boolean completed=false;
-        private int actualTime=0;
+        private double actualTime=0;
 
-        public int ActualTime
+        public double ActualTime
         {
             get
             {
@@ -118,7 +118,7 @@ namespace Backlog
             cd.ShowDialog();
             try
             {
-                actualTime = int.Parse(cd.TimeSpentTextBox.Text);
+                actualTime = double.Parse(cd.TimeSpentTextBox.Text);
             }
             catch (Exception)
             {

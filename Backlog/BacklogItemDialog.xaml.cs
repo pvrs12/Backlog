@@ -127,10 +127,10 @@ namespace Backlog
 
         private void EstimateTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            int a;
+            double a;
             try
             {
-                a = int.Parse(e.Text);
+                a = double.Parse(e.Text);
             }
             catch (Exception)
             {

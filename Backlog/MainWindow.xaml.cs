@@ -61,8 +61,8 @@ namespace Backlog
             string[] spl = { System.Environment.NewLine };
             string[] ss = s.Split(spl, StringSplitOptions.RemoveEmptyEntries);
             taskFile = ss[0];
-            actual = int.Parse(ss[1]);
-            estimated = int.Parse(ss[2]);
+            actual = double.Parse(ss[1]);
+            estimated = double.Parse(ss[2]);
 
             updateVelocity();
         }
@@ -106,8 +106,8 @@ namespace Backlog
         static String settingsFile = folder + System.IO.Path.DirectorySeparatorChar + @"settings.txt";
         static String taskFile = folder + System.IO.Path.DirectorySeparatorChar + @"taskfile.txt";
 
-        static int actual = 0;
-        static int estimated = 0;
+        static double actual = 0;
+        static double estimated = 0;
 
         public MainWindow()
         {
@@ -225,7 +225,7 @@ namespace Backlog
         {
             try
             {
-                estimated += int.Parse(value.TimeEstimateBlock.Text);
+                estimated += double.Parse(value.TimeEstimateBlock.Text);
                 actual += value.ActualTime;
 
                 //update the velocity
