@@ -127,17 +127,14 @@ namespace Backlog
 
         private void EstimateTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            double a;
-            try
+
+            if (e.Text.Equals(".") && EstimateTextBox.Text.Count((c) => { return c == '.'; }) < 1)
             {
-                a = double.Parse(e.Text);
-            }
-            catch (Exception)
-            {
-                e.Handled = true;
+                e.Handled = false;
                 return;
             }
-            e.Handled = false;
+            double a;
+            e.Handled = !Double.TryParse(e.Text, out a);
         }
     }
 }
